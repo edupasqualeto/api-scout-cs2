@@ -1,5 +1,6 @@
 package com.scout.cs2scout.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +21,6 @@ public class PerfilCompetitivo {
 
     @OneToOne
     @JoinColumn(name = "jogador_id")
+    @JsonIgnore
     private Jogador jogador;
 }

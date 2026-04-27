@@ -1,5 +1,6 @@
 package com.scout.cs2scout.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,5 +19,6 @@ public class Time {
     private String nomeTime;
 
     @OneToMany(mappedBy = "time")
+    @JsonIgnore
     private List<Jogador> jogadores;
 }

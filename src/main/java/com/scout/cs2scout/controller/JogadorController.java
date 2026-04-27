@@ -1,5 +1,6 @@
 package com.scout.cs2scout.controller;
 
+import com.scout.cs2scout.model.Funcao;
 import com.scout.cs2scout.model.Jogador;
 import com.scout.cs2scout.service.JogadorService;
 import org.hibernate.Remove;
@@ -21,6 +22,9 @@ public class JogadorController {
 
     @GetMapping
     public List<Jogador> listar() { return service.listar(); }
+
+    @GetMapping("/buscar")
+    public List<Jogador> listarPorFuncao(@RequestParam Funcao funcao) { return service.buscarPorFuncao(funcao); }
 
     @GetMapping("/{id}")
     public Jogador buscar(@PathVariable Long id) { return service.buscarPorId(id); }
