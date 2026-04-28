@@ -3,7 +3,6 @@ package com.scout.cs2scout.controller;
 import com.scout.cs2scout.model.Funcao;
 import com.scout.cs2scout.model.Jogador;
 import com.scout.cs2scout.service.JogadorService;
-import org.hibernate.Remove;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +23,10 @@ public class JogadorController {
     public List<Jogador> listar() { return service.listar(); }
 
     @GetMapping("/buscar")
-    public List<Jogador> listarPorFuncao(@RequestParam Funcao funcao) { return service.buscarPorFuncao(funcao); }
+    public List<Jogador> buscarComFiltro(@RequestParam Funcao funcao,
+                                         @RequestParam(required = false) Long elo,
+                                         @RequestParam(required = false) String nacionalidade)
+    { return service.buscar(funcao, elo, nacionalidade); }
 
     @GetMapping("/{id}")
     public Jogador buscar(@PathVariable Long id) { return service.buscarPorId(id); }

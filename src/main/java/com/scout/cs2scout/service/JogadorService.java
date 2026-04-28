@@ -38,18 +38,20 @@ public class JogadorService {
             jogador.setTime(time);
         }
 
-        if (jogador.getTime() != null) {
-            atualizarHistorico(jogador, jogador.getTime());
-        }
+        Jogador salvo = repository.save(jogador);
+        repository.flush();
 
-        return repository.save(jogador);
+        if (salvo.getTime() != null) {
+            atualizarHistorico(salvo, salvo.getTime());
+        }
+        return salvo;
     }
     public List<Jogador> listar() {
         return repository.findAll();
     }
 
-    public List<Jogador> buscarPorFuncao(Funcao funcao) {
-        return repository.findByPerfilCompetitivo_Funcao(funcao);
+    public List<Jogador> buscar(Funcao funcao, Long elo, String nacionalidade) {
+            return repository.buscar(funcao, elo, nacionalidade);
     }
 
     public void remover(Long id) { repository.deleteById(id); }
