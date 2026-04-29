@@ -4,7 +4,9 @@ import com.scout.cs2scout.model.*;
 import com.scout.cs2scout.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +20,7 @@ public class JogadorService {
     @Autowired
     private HistoricoTimeRepository historicoRepository;
 
+    @Transactional
     public Jogador salvar(Jogador jogador) {
 
         if (jogador.getPerfilCompetitivo() != null) {
@@ -45,11 +48,19 @@ public class JogadorService {
 
     public Jogador buscarPorId(Long id) { return repository.findById(id).orElse(null); }
 
-    public List<Jogador> buscarComFiltro(Funcao funcao, Long elo, String nacionalidade, Integer idadeMin, Integer idadeMax, Long time_id) {
-            return repository.buscar(funcao, elo, nacionalidade, idadeMin, idadeMax, time_id);
+    public Page<Jogador> buscarComFiltro(Funcao funcao, Long elo,
+                                         String nacionalidade, Integer idadeMin,
+                                         Integer idadeMax, Long time_id, Pageable pageable) {
+            return repository.buscar(funcao, elo, nacionalidade, idadeMin, idadeMax, time_id, pageable);
     }
 
-    public void deletar(Long id) { repository.deleteById(id); }
+    @Transactional
+    public void deletar(Long id) {
+        historicoRepository.deleteByJogadorId(id);
+        historicoRepository.flush();
+
+        repository.deleteById(id);
+    }
 
     @Transactional
     public void atualizar(Long id, Jogador jogador) {
