@@ -2,7 +2,6 @@ package com.scout.cs2scout.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Entity

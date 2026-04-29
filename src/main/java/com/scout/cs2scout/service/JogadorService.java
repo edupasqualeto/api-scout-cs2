@@ -1,16 +1,13 @@
 package com.scout.cs2scout.service;
 
 import com.scout.cs2scout.model.*;
-import com.scout.cs2scout.repository.HistoricoTimeRepository;
-import com.scout.cs2scout.repository.JogadorRepository;
-import com.scout.cs2scout.repository.TimeRepository;
+import com.scout.cs2scout.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class JogadorService {
@@ -20,10 +17,6 @@ public class JogadorService {
     private JogadorRepository repository;
     @Autowired
     private HistoricoTimeRepository historicoRepository;
-
-    public Jogador buscarPorId(Long id) {
-        return repository.findById(id).orElse(null);
-    }
 
     public Jogador salvar(Jogador jogador) {
 
@@ -44,36 +37,56 @@ public class JogadorService {
         if (salvo.getTime() != null) {
             atualizarHistorico(salvo, salvo.getTime());
         }
+
         return salvo;
     }
-    public List<Jogador> listar() {
-        return repository.findAll();
+
+    public List<Jogador> listar() { return repository.findAll(); }
+
+    public Jogador buscarPorId(Long id) { return repository.findById(id).orElse(null); }
+
+    public List<Jogador> buscarComFiltro(Funcao funcao, Long elo, String nacionalidade, Integer idadeMin, Integer idadeMax, Long time_id) {
+            return repository.buscar(funcao, elo, nacionalidade, idadeMin, idadeMax, time_id);
     }
 
-    public List<Jogador> buscar(Funcao funcao, Long elo, String nacionalidade) {
-            return repository.buscar(funcao, elo, nacionalidade);
-    }
-
-    public void remover(Long id) { repository.deleteById(id); }
+    public void deletar(Long id) { repository.deleteById(id); }
 
     @Transactional
     public void atualizar(Long id, Jogador jogador) {
         Jogador novoJogador = buscarPorId(id);
+
         if (novoJogador != null) {
-            novoJogador.setNickname(jogador.getNickname());
-            novoJogador.setNomeCompleto(jogador.getNomeCompleto());
-            novoJogador.setNacionalidade(jogador.getNacionalidade());
-            novoJogador.setIdade(jogador.getIdade());
-            novoJogador.setHltvUrl(jogador.getHltvUrl());
+            if (jogador.getNickname() != null) {
+                novoJogador.setNickname(jogador.getNickname());
+            }
+            if (jogador.getNomeCompleto() != null) {
+                novoJogador.setNomeCompleto(jogador.getNomeCompleto());
+            }
+            if (jogador.getNacionalidade() != null) {
+                novoJogador.setNacionalidade(jogador.getNacionalidade());
+            }
+            if (jogador.getIdade() != null) {
+                novoJogador.setIdade(jogador.getIdade());
+            }
+            if (jogador.getHltvUrl() != null) {
+                novoJogador.setHltvUrl(jogador.getHltvUrl());
+            }
 
-            if (jogador.getTime() != null && !jogador.getTime().getId().equals(novoJogador.getTime().getId())) {
+            Long timeAtualId;
+            if (jogador.getTime() != null) {
+                Long novoTimeId = jogador.getTime().getId();
 
-                Time novoTime = timeRepository.findById(jogador.getTime().getId())
-                        .orElseThrow();
+                if(novoJogador.getTime() != null) {
+                    timeAtualId = novoJogador.getTime().getId();
+                } else { timeAtualId = null; }
 
-                novoJogador.setTime(novoTime);
+                if (!Objects.equals(novoTimeId, timeAtualId)) {
+                    Time novoTime = timeRepository.findById(novoTimeId)
+                            .orElseThrow();
 
-                atualizarHistorico(novoJogador, novoTime);
+                    novoJogador.setTime(novoTime);
+                    atualizarHistorico(novoJogador, novoTime);
+                }
             }
 
             if (jogador.getPerfilCompetitivo() != null) {
@@ -82,21 +95,24 @@ public class JogadorService {
                     perfil.setJogador(novoJogador);
                     novoJogador.setPerfilCompetitivo(perfil);
                 }
-                PerfilCompetitivo perfil = novoJogador.getPerfilCompetitivo();
-                perfil.setFuncao(jogador.getPerfilCompetitivo().getFuncao());
-                perfil.setElo(jogador.getPerfilCompetitivo().getElo());
+                if(jogador.getPerfilCompetitivo().getFuncao() != null) {
+                    novoJogador.getPerfilCompetitivo().setFuncao(jogador.getPerfilCompetitivo().getFuncao());
+                }
+                if(jogador.getPerfilCompetitivo().getElo() != null) {
+                    novoJogador.getPerfilCompetitivo().setElo(jogador.getPerfilCompetitivo().getElo());
+                }
             }
         }
     }
 
     private void atualizarHistorico(Jogador jogador, Time novoTime) {
 
-        Optional<HistoricoTime> historicoAtual =
+        HistoricoTime historicoAtual =
                 historicoRepository.findTopByJogadorAndDataSaidaIsNullOrderByDataEntradaDesc(jogador);
 
-        historicoAtual.ifPresent(h -> {
-            h.setDataSaida(LocalDate.now());
-        });
+        if(historicoAtual != null) {
+            historicoAtual.setDataSaida(LocalDate.now());
+        }
 
         HistoricoTime novo = new HistoricoTime();
         novo.setJogador(jogador);

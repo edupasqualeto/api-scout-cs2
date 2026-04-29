@@ -1,10 +1,9 @@
 package com.scout.cs2scout.controller;
 
-import com.scout.cs2scout.model.Time;
-import com.scout.cs2scout.service.TimeService;
+import com.scout.cs2scout.model.*;
+import com.scout.cs2scout.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -14,9 +13,7 @@ public class TimeController {
     private TimeService service;
 
     @PostMapping
-    public Time criar(@RequestBody Time time) {
-        return service.salvar(time);
-    }
+    public Time criar(@RequestBody Time time) { return service.salvar(time); }
 
     @GetMapping
     public List<Time> listar() { return service.listar(); }

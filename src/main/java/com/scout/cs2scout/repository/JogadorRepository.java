@@ -1,22 +1,29 @@
 package com.scout.cs2scout.repository;
 
-import com.scout.cs2scout.model.Funcao;
-import com.scout.cs2scout.model.Jogador;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import com.scout.cs2scout.model.*;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
 public interface JogadorRepository extends JpaRepository<Jogador, Long> {
-    @Query("SELECT jogador FROM Jogador jogador WHERE " +
-            "(jogador.perfilCompetitivo.funcao = :funcao) AND " +
-            "(:nacionalidade IS NULL OR jogador.nacionalidade = :nacionalidade) AND " +
-            "(:elo IS NULL OR jogador.perfilCompetitivo.elo >= :elo)")
+    @Query("""
+            SELECT j FROM Jogador j
+            LEFT JOIN j.perfilCompetitivo p
+            LEFT JOIN j.time t
+            WHERE (:funcao IS NULL OR p.funcao = :funcao)
+            AND (:nacionalidade IS NULL OR j.nacionalidade = :nacionalidade)
+            AND (:elo IS NULL OR p.elo >= :elo)
+            AND (:idadeMin IS NULL OR j.idade >= :idadeMin)
+            AND (:idadeMax IS NULL OR j.idade <= :idadeMax)
+            AND (:time_id IS NULL OR t.id = :time_id)
+        """)
     List<Jogador> buscar(
             @Param("funcao") Funcao funcao,
             @Param("elo") Long elo,
-            @Param("nacionalidade") String nacionalidade
+            @Param("nacionalidade") String nacionalidade,
+            @Param("idadeMin") Integer idadeMin,
+            @Param("idadeMax") Integer idadeMax,
+            @Param("time_id") Long time_id
     );
 }
 
