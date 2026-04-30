@@ -28,19 +28,21 @@ public class JogadorService {
         }
 
         if (jogador.getTime() != null && jogador.getTime().getId() != null) {
-            Time time = timeRepository.findById(jogador.getTime().getId())
-                    .orElseThrow(() -> new RuntimeException("Time não encontrado"));
+            Time time = timeRepository.findById(jogador.getTime().getId()).orElse(null);
 
             jogador.setTime(time);
         }
 
         Jogador salvo = repository.save(jogador);
-        repository.flush();
 
         if (salvo.getTime() != null) {
-            atualizarHistorico(salvo, salvo.getTime());
-        }
+            HistoricoTime atual = historicoRepository
+                    .findTopByJogadorAndDataSaidaIsNullOrderByDataEntradaDesc(salvo);
 
+            if (atual == null || !atual.getTime().getId().equals(salvo.getTime().getId())) {
+                atualizarHistorico(salvo, salvo.getTime());
+            }
+        }
         return salvo;
     }
 
@@ -56,10 +58,8 @@ public class JogadorService {
 
     @Transactional
     public void deletar(Long id) {
-        historicoRepository.deleteByJogadorId(id);
-        historicoRepository.flush();
-
-        repository.deleteById(id);
+        Jogador jogador = buscarPorId(id);
+        repository.delete(jogador);
     }
 
     @Transactional
@@ -84,12 +84,12 @@ public class JogadorService {
             }
 
             Long timeAtualId;
-            if (jogador.getTime() != null) {
-                Long novoTimeId = jogador.getTime().getId();
+            if(novoJogador.getTime() != null) {
+                timeAtualId = novoJogador.getTime().getId();
+            } else { timeAtualId = null; }
 
-                if(novoJogador.getTime() != null) {
-                    timeAtualId = novoJogador.getTime().getId();
-                } else { timeAtualId = null; }
+            if (jogador.getTime() != null && jogador.getTime().getId() != null) {
+                Long novoTimeId = jogador.getTime().getId();
 
                 if (!Objects.equals(novoTimeId, timeAtualId)) {
                     Time novoTime = timeRepository.findById(novoTimeId)
@@ -97,6 +97,12 @@ public class JogadorService {
 
                     novoJogador.setTime(novoTime);
                     atualizarHistorico(novoJogador, novoTime);
+                }
+            }
+            else if (jogador.getTime() == null) {
+                if (timeAtualId != null) {
+                    novoJogador.setTime(null);
+                    atualizarHistorico(novoJogador, null);
                 }
             }
 
@@ -113,6 +119,7 @@ public class JogadorService {
                     novoJogador.getPerfilCompetitivo().setElo(jogador.getPerfilCompetitivo().getElo());
                 }
             }
+            repository.save(novoJogador);
         }
     }
 

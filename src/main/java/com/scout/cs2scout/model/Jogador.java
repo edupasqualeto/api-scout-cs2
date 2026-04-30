@@ -1,7 +1,9 @@
 package com.scout.cs2scout.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,6 +25,10 @@ public class Jogador {
     @JoinColumn(name = "time_id")
     private Time time;
 
-    @OneToOne(mappedBy = "jogador", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "jogador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HistoricoTime> historicos;
+
+    @OneToOne(mappedBy = "jogador", cascade = CascadeType.ALL, orphanRemoval = true)
     private PerfilCompetitivo perfilCompetitivo;
 }
