@@ -1,5 +1,7 @@
 package com.scout.cs2scout.controller;
 
+import com.scout.cs2scout.dto.JogadorRequestDTO;
+import com.scout.cs2scout.dto.JogadorResponseDTO;
 import com.scout.cs2scout.model.*;
 import com.scout.cs2scout.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +18,18 @@ public class JogadorController {
     private JogadorService service;
 
     @PostMapping
-    public Jogador criar(@RequestBody Jogador jogador) {
-        return service.salvar(jogador);
+    public JogadorResponseDTO criar(@RequestBody JogadorRequestDTO jogadorRequestDTO) {
+        return service.salvar(jogadorRequestDTO);
     }
 
     @GetMapping
-    public List<Jogador> listar() { return service.listar(); }
+    public List<JogadorResponseDTO> listar() { return service.listar(); }
 
     @GetMapping("/{id}")
-    public Jogador buscarPorId(@PathVariable Long id) { return service.buscarPorId(id); }
+    public JogadorResponseDTO buscarPorId(@PathVariable Long id) { return service.buscarPorId(id); }
 
     @GetMapping("/buscar")
-    public Page<Jogador> buscarComFiltro(@RequestParam(required = false) Funcao funcao,
+    public Page<JogadorResponseDTO> buscarComFiltro(@RequestParam(required = false) Funcao funcao,
                                          @RequestParam(required = false) Long elo,
                                          @RequestParam(required = false) String nacionalidade,
                                          @RequestParam(required = false) Integer idadeMin,
@@ -40,8 +42,8 @@ public class JogadorController {
     public void deletar(@PathVariable Long id) { service.deletar(id); }
 
     @PutMapping("/{id}")
-    public void atualizar(@PathVariable Long id, @RequestBody Jogador jogador) {
-        service.atualizar(id, jogador);
+    public void atualizar(@PathVariable Long id, @RequestBody JogadorRequestDTO jogadorRequestDTO) {
+        service.atualizar(id, jogadorRequestDTO);
     }
 
 }
