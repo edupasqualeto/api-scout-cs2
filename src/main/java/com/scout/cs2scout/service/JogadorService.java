@@ -2,6 +2,7 @@ package com.scout.cs2scout.service;
 
 import com.scout.cs2scout.dto.JogadorRequestDTO;
 import com.scout.cs2scout.dto.JogadorResponseDTO;
+import com.scout.cs2scout.exception.ResourceNotFoundException;
 import com.scout.cs2scout.model.*;
 import com.scout.cs2scout.repository.*;
 import jakarta.transaction.Transactional;
@@ -31,7 +32,8 @@ public class JogadorService {
         }
 
         if (jogadorRequestDTO.getTimeId() != null) {
-            Time time = timeRepository.findById(jogadorRequestDTO.getTimeId()).orElse(null);
+            Time time = timeRepository.findById(jogadorRequestDTO.getTimeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Time não encontrado"));
             jogador.setTime(time);
         }
 
@@ -53,8 +55,8 @@ public class JogadorService {
         return repository.findAll().stream().map(this::JogadortoDTOJogador).toList(); }
 
     public JogadorResponseDTO buscarPorId(Long id) {
-        Jogador jogador = repository.findById(id).orElse(null);
-        if (jogador == null) return null;
+        Jogador jogador = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Jogador não encontrado!"));
         return (JogadortoDTOJogador(jogador));
     }
 
@@ -66,17 +68,16 @@ public class JogadorService {
 
     @Transactional
     public void deletar(Long id) {
-        Jogador jogador = repository.findById(id).orElse(null);
-        if(jogador != null) {
-                repository.delete(jogador);
-        }
+        Jogador jogador = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Jogador não encontrado!"));
+        repository.delete(jogador);
     }
 
     @Transactional
     public void atualizar(Long id, JogadorRequestDTO jogadorRequestDTO) {
-        Jogador novoJogador = repository.findById(id).orElse(null);
+        Jogador novoJogador = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Jogador não encontrado!"));
 
-        if (novoJogador != null) {
             if (jogadorRequestDTO.getNickname() != null) {
                 novoJogador.setNickname(jogadorRequestDTO.getNickname());
             }
@@ -105,7 +106,7 @@ public class JogadorService {
 
                 if (!Objects.equals(novoTimeId, timeAtualId)) {
                     Time novoTime = timeRepository.findById(novoTimeId)
-                            .orElseThrow();
+                            .orElseThrow(() -> new ResourceNotFoundException("Time não encontrado"));
 
                     novoJogador.setTime(novoTime);
                     atualizarHistorico(novoJogador, novoTime);
@@ -136,7 +137,6 @@ public class JogadorService {
 
             repository.save(novoJogador);
         }
-    }
 
     private void atualizarHistorico(Jogador jogador, Time novoTime) {
 
