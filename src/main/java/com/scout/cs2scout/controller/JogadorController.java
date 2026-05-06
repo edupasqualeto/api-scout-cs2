@@ -2,8 +2,10 @@ package com.scout.cs2scout.controller;
 
 import com.scout.cs2scout.dto.JogadorRequestDTO;
 import com.scout.cs2scout.dto.JogadorResponseDTO;
+import com.scout.cs2scout.dto.JogadorUpdateDTO;
 import com.scout.cs2scout.model.*;
 import com.scout.cs2scout.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +22,7 @@ public class JogadorController {
     private JogadorService service;
 
     @PostMapping
-    public ResponseEntity<JogadorResponseDTO> criar(@RequestBody JogadorRequestDTO jogadorRequestDTO) {
+    public ResponseEntity<JogadorResponseDTO> criar(@Valid @RequestBody JogadorRequestDTO jogadorRequestDTO) {
         JogadorResponseDTO jogadorResponseDTO = service.salvar(jogadorRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(jogadorResponseDTO);
     }
@@ -53,8 +55,8 @@ public class JogadorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody JogadorRequestDTO jogadorRequestDTO) {
-        service.atualizar(id, jogadorRequestDTO);
+    public ResponseEntity<Void> atualizar(@PathVariable Long id, @Valid @RequestBody JogadorUpdateDTO jogadorUpdateDTO) {
+        service.atualizar(id, jogadorUpdateDTO);
         return ResponseEntity.noContent().build();
+        }
     }
-}

@@ -2,6 +2,7 @@ package com.scout.cs2scout.service;
 
 import com.scout.cs2scout.dto.JogadorRequestDTO;
 import com.scout.cs2scout.dto.JogadorResponseDTO;
+import com.scout.cs2scout.dto.JogadorUpdateDTO;
 import com.scout.cs2scout.exception.ResourceNotFoundException;
 import com.scout.cs2scout.model.*;
 import com.scout.cs2scout.repository.*;
@@ -74,7 +75,7 @@ public class JogadorService {
     }
 
     @Transactional
-    public void atualizar(Long id, JogadorRequestDTO jogadorRequestDTO) {
+    public void atualizar(Long id, JogadorUpdateDTO jogadorRequestDTO) {
         Jogador novoJogador = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Jogador não encontrado!"));
 
