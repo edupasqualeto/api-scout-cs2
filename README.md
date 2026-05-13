@@ -90,7 +90,7 @@ Responsável por registrar transferências entre times.
 
 ## Clonar o repositório
 
-git clone https://github.com/SEU-USUARIO/api-scout-cs2.git
+git clone https://github.com/edupasqualeto/api-scout-cs2.git
 
 cd api-scout-cs2
 
