@@ -144,7 +144,6 @@ public class JogadorService {
         HistoricoTime historicoAtual =
                 historicoRepository.findTopByJogadorAndDataSaidaIsNullOrderByDataEntradaDesc(jogador);
 
-
         if (historicoAtual == null) {
             if (novoTime != null) {
                 HistoricoTime novo = new HistoricoTime();
@@ -153,21 +152,22 @@ public class JogadorService {
                 novo.setDataEntrada(LocalDate.now());
                 historicoRepository.save(novo);
             }
+            return;
         }
-        if (historicoAtual != null) {
-            if (novoTime == null) {
-                historicoAtual.setDataSaida(LocalDate.now());
-            }
-            else if (historicoAtual.getTime() != null &&
-                    !historicoAtual.getTime().getId().equals(novoTime.getId())) {
-                historicoAtual.setDataSaida(LocalDate.now());
 
-                HistoricoTime novo = new HistoricoTime();
-                novo.setJogador(jogador);
-                novo.setTime(novoTime);
-                novo.setDataEntrada(LocalDate.now());
-                historicoRepository.save(novo);
-            }
+        if (novoTime == null) {
+            historicoAtual.setDataSaida(LocalDate.now());
+            return;
+        }
+
+        if (!historicoAtual.getTime().getId().equals(novoTime.getId())) {
+            historicoAtual.setDataSaida(LocalDate.now());
+
+            HistoricoTime novo = new HistoricoTime();
+            novo.setJogador(jogador);
+            novo.setTime(novoTime);
+            novo.setDataEntrada(LocalDate.now());
+            historicoRepository.save(novo);
         }
     }
 

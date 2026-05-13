@@ -1,5 +1,6 @@
 package com.scout.cs2scout.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,33 +14,40 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+  public ResponseEntity<ApiErrorResponse> handleNotFound(
+          ResourceNotFoundException ex,
+          HttpServletRequest request) {
 
-    ErrorResponse erro = new ErrorResponse(
+    ApiErrorResponse erro = new ApiErrorResponse(
             LocalDateTime.now(),
-            404,
-            "Resource Not Found",
-            ex.getMessage()
+            HttpStatus.NOT_FOUND.value(),
+            HttpStatus.NOT_FOUND.getReasonPhrase(),
+            ex.getMessage(),
+            request.getRequestURI(),
+            null
     );
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleValidationErrors(
-          MethodArgumentNotValidException ex) {
+  public ResponseEntity<ApiErrorResponse> handleValidationErrors(
+          MethodArgumentNotValidException ex,
+          HttpServletRequest request) {
 
-    Map<String, String> errors = new HashMap<>();
+    Map<String, String> fields = new HashMap<>();
 
     ex.getBindingResult().getFieldErrors().forEach(error -> {
-      errors.put(error.getField(), error.getDefaultMessage());
+      fields.put(error.getField(), error.getDefaultMessage());
     });
 
-    ErrorResponse erro = new ErrorResponse(
+    ApiErrorResponse erro = new ApiErrorResponse(
             LocalDateTime.now(),
-            400,
+            HttpStatus.BAD_REQUEST.value(),
             "Validation Error",
-            errors
+            "Campos inválidos",
+            request.getRequestURI(),
+            fields
     );
 
     return ResponseEntity.badRequest().body(erro);
