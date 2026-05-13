@@ -1,6 +1,6 @@
 # CS2 Scout API
 
-API REST desenvolvida com Spring Boot para gerenciamento de jogadores profissionais de Counter-Strike 2, incluindo times, perfis competitivos e histórico de transferências.
+API REST desenvolvida com Spring Boot para gerenciamento de jogadores profissionais de Counter-Strike 2.
 
 ---
 
@@ -49,7 +49,7 @@ Armazena estatísticas e função competitiva do jogador.
 
 ### HistoricoTime
 
-Responsável por registrar transferências e histórico entre times.
+Responsável por registrar transferências entre times.
 
 ---
 
@@ -73,14 +73,8 @@ Responsável por registrar transferências e histórico entre times.
 
 # Estrutura do Projeto
 
-src/main/java
- ├── controller
- ├── service
- ├── repository
- ├── model
- ├── dto
- └── exception
- 
+<img width="446" height="274" alt="Imagem colada (5)" src="https://github.com/user-attachments/assets/c6dcbeaa-febf-4532-9828-4a8a62dd1d63" />
+
 ---
 
 # Como Executar o Projeto
@@ -142,33 +136,19 @@ Esse script:
 
 ## Criar Jogador
 
-Arquivo json:
-{
-  "nickname": "KSCERATO",
-  "nomeCompleto": "Kaike Cerato",
-  "nacionalidade": "Brasil",
-  "idade": 25,
-  "hltvUrl": "https://www.hltv.org/player/15631/kscerato",
-  "timeId": 1,
-  "elo": 3250,
-  "funcao": "RIFLER"
-}
+<img width="665" height="281" alt="Imagem colada (2)" src="https://github.com/user-attachments/assets/8fcc1370-2721-4a86-9d11-78313b2cf49b" />
 
 ---
 
-# Exemplo de Resposta
+# Exemplo de busca por ID
 
-Arquivo json:
-{
-  "nickname": "KSCERATO",
-  "nomeCompleto": "Kaike Cerato",
-  "nacionalidade": "Brasil",
-  "idade": 25,
-  "hltvUrl": "https://www.hltv.org/player/15631/kscerato",
-  "nomeTime": "FURIA",
-  "elo": 3250,
-  "funcao": "RIFLER"
-}
+<img width="665" height="281" alt="Imagem colada (3)" src="https://github.com/user-attachments/assets/2c52842b-c819-479c-ae8a-2ec872b266e6" />
+
+---
+
+# Exemplo de busca com filtros (funcao == AWPER)
+
+<img width="734" height="616" alt="Imagem colada (4)" src="https://github.com/user-attachments/assets/3c7ceb76-04d4-480f-9437-24e14fc40766" />
 
 ---
 
