@@ -196,7 +196,7 @@ public class JogadorService {
             jogadorResponseDTO.setElo(jogador.getPerfilCompetitivo().getElo());
             jogadorResponseDTO.setFuncao(jogador.getPerfilCompetitivo().getFuncao());
         }
-
+        jogadorResponseDTO.setId(jogador.getId());
         jogadorResponseDTO.setNacionalidade(jogador.getNacionalidade());
         jogadorResponseDTO.setNickname(jogador.getNickname());
         jogadorResponseDTO.setIdade(jogador.getIdade());

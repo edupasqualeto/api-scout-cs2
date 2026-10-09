@@ -1,4 +1,4 @@
-package com.scout.cs2scout.controller;
+package com.scout.cs2scout.contr Se o seu sistema é (e sempre será) um CRUD, provavelmente não há necessidade de usar DDD.oller;
 
 import com.scout.cs2scout.dto.JogadorRequestDTO;
 import com.scout.cs2scout.dto.JogadorResponseDTO;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/jogadores")
 public class JogadorController {

@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JogadorResponseDTO {
+    private Long id;
     private String nickname;
     private String nomeCompleto;
     private String nacionalidade;
